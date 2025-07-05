@@ -1,1 +1,180 @@
+enable
+configure terminal
+hostname CORE-SW-01
 
+! VLANs
+vlan 10
+ name IT
+vlan 20
+ name MARKETING
+vlan 30
+ name VENTAS
+vlan 99
+ name GESTION
+vlan 404
+ name NATIVE_VLAN
+vlan 500
+ name UNUSED_VLAN
+
+! GVRP Configuration
+gvrp
+
+! Configuración de interfaces VLAN
+interface vlan 10
+ ip address 192.168.0.1 255.255.255.224
+ description VLAN IT
+ no shutdown
+interface vlan 20
+ ip address 192.168.0.33 255.255.255.224
+  description VLAN MARKETING
+ no shutdown
+interface vlan 30
+ ip address 192.168.0.65 255.255.255.224
+  description VLAN VENTAS
+ no shutdown
+interface vlan 99
+ ip address 192.168.0.97 255.255.255.0
+  description VLAN GESTION
+ no shutdown
+interface vlan 404
+  description NATIVE_VLAN
+ no ip address
+ shutdown
+
+ interface vlan 500
+  description UNUSED_VLAN
+ no ip address
+ shutdown
+
+! DHCP Configuration
+ip dhcp excluded-address 192.168.0.1
+ip dhcp excluded-address 192.168.0.33
+ip dhcp excluded-address 192.168.0.65
+ip dhcp excluded-address 192.168.0.97
+
+ip dhcp pool IT_POOL
+ network 192.168.0.0 255.255.255.224
+ default-router 192.168.0.1
+ lease 7
+
+ip dhcp pool MARKETING_POOL
+ network 192.168.0.32 255.255.255.224
+ default-router 192.168.0.33
+ lease 7
+
+ip dhcp pool SALES_POOL
+ network 192.168.0.64 255.255.255.224
+ default-router 192.168.0.65
+ lease 7
+
+ip dhcp pool MANAGEMENT_POOL
+ network 192.168.0.96 255.255.255.224
+ default-router 192.168.0.97
+ lease 7
+
+! Configuración de interfaces (EtherChannel y Troncales)
+interface loopback 0
+ ip address 192.168.0.100 255.255.255.255
+
+! EtherChannel to Distribution Switches
+interface range fastethernet 0/0-1
+ description ETHERCHANNEL_TO_DIST-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ channel-group 1 mode active
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ no shutdown
+
+interface range fastethernet 1/0-1
+ description ETHERCHANNEL_TO_DIST-SW-02
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ channel-group 2 mode active
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ no shutdown
+
+interface port-channel 1
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ no shutdown
+
+interface port-channel 2
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ no shutdown
+
+! Shutdown unused ports
+interface range fastethernet 1/2-15
+ switchport mode access
+ switchport access vlan 500
+ shutdown
+
+! Rapid PVST+ Configuration
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 4096
+spanning-tree vlan 20 priority 4096
+spanning-tree vlan 30 priority 4096
+spanning-tree vlan 99 priority 4096
+spanning-tree vlan 404 priority 4096
+
+! ACL Configuration for VLAN Separation
+ip access-list extended BLOCK_INTER_VLAN
+ deny ip 192.168.0.0 0.0.0.31 192.168.0.32 0.0.0.31
+ deny ip 192.168.0.0 0.0.0.31 192.168.0.64 0.0.0.31
+ deny ip 192.168.0.32 0.0.0.31 192.168.0.0 0.0.0.31
+ deny ip 192.168.0.32 0.0.0.31 192.168.0.64 0.0.0.31
+ deny ip 192.168.0.64 0.0.0.31 192.168.0.0 0.0.0.31
+ deny ip 192.168.0.64 0.0.0.31 192.168.0.32 0.0.0.31
+ permit ip any any
+
+! Apply ACL to VLANs
+interface vlan 10
+ ip access-group BLOCK_INTER_VLAN in
+interface vlan 20
+ ip access-group BLOCK_INTER_VLAN in
+interface vlan 30
+ ip access-group BLOCK_INTER_VLAN in
+
+! Configuración básica de seguridad
+no ip domain-lookup
+service password-encryption
+enable secret cisco123
+banner motd # CORE SWITCH - ACCESO AUTORIZADO SOLAMENTE #
+
+! Seguridad adicional
+vtp mode transparent
+no cdp run
+no ip http server
+no ip http secure-server
+
+! Acceso remoto seguro
+username admin privilege 15 secret admin123
+ip domain-name redes.local
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+
+! Console and VTY Configuration
+line console 0
+ password 7 0822455D0A16
+ login local
+ logging synchronous
+ exec-timeout 5 0
+
+line vty 0 4
+ transport input ssh
+ login local
+ exec-timeout 5 0
+
+! Save configuration
+end
+write memory
