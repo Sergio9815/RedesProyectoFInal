@@ -88,6 +88,7 @@ interface range fastethernet 0/0-1
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  no shutdown
+exit
 
 interface range fastethernet 1/0-1
  description ETHERCHANNEL_TO_DIST-SW-02
@@ -100,18 +101,21 @@ interface range fastethernet 1/0-1
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  no shutdown
+exit
 
 interface port-channel 1
  switchport mode trunk
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  no shutdown
+exit
 
 interface port-channel 2
  switchport mode trunk
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  no shutdown
+exit
 
 ! Shutdown unused ports
 interface range fastethernet 1/2-15

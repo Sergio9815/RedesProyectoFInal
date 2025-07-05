@@ -1,0 +1,163 @@
+enable
+configure terminal
+hostname DIST-SW-01 
+
+! GVRP Configuration
+gvrp
+
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,99,404
+
+! EtherChannel to Core Switch
+interface range fastethernet 0/0-1
+ description ETHERCHANNEL_TO_CORE-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ channel-group 1 mode active
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ ip dhcp snooping trust
+ no shutdown
+exit
+
+! EtherChannel to Distribution 02
+interface range fastethernet 1/4-5
+ description ETHERCHANNEL_TO_DIST-SW-02
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ channel-group 2 mode active
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ no shutdown
+exit
+
+interface port-channel 1
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ no shutdown
+exit
+
+interface port-channel 2
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,20,30,99,404
+ no shutdown
+exit
+
+! Uplinks to Access Switches
+interface fastethernet 1/0
+ description UPLINK_TO_IT-ACCESS-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,99,404
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ ip dhcp snooping limit rate 10
+ switchport trunk encapsulation dot1q
+ switchport nonegotiate
+ no shutdown
+exit
+
+interface fastethernet 1/1
+ description UPLINK_TO_MKT-ACCESS-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 20,99,404
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ ip dhcp snooping limit rate 10
+ switchport trunk encapsulation dot1q
+ switchport nonegotiate
+ no shutdown
+exit
+
+interface fastethernet 1/2
+ description UPLINK_TO_SALES-ACCESS-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 30,99,404
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ ip dhcp snooping limit rate 10
+ switchport trunk encapsulation dot1q
+ switchport nonegotiate
+ no shutdown
+exit
+
+interface fastethernet 1/3
+ description UPLINK_TO_ADMIN-ACCESS-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 99,404
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ ip dhcp snooping limit rate 10
+ switchport trunk encapsulation dot1q
+ switchport nonegotiate
+ no shutdown
+exit
+
+! Rapid PVST+ Configuration
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 8192
+spanning-tree vlan 20 priority 8192
+spanning-tree vlan 30 priority 8192
+spanning-tree vlan 99 priority 8192
+spanning-tree vlan 404 priority 8192
+
+! VLAN de gestión
+vlan 99
+ name GESTION
+interface vlan 99
+ ip address 192.168.0.98 255.255.255.0
+ no shutdown
+exit
+
+! Shutdown unused ports
+interface range fastethernet 1/6-15
+ switchport mode access
+ switchport access vlan 500
+ shutdown
+
+ ! Configuración básica de seguridad
+no ip domain-lookup
+service password-encryption
+enable secret cisco123
+banner motd # SWITCH DISTRIBUCIÓN 01 - USO RESTRINGIDO #
+
+! Seguridad adicional
+no cdp run
+no ip http server
+no ip http secure-server
+vtp mode transparent
+
+! Acceso remoto seguro
+username admin privilege 15 secret admin123
+ip domain-name redes.local
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+
+! Console and VTY Configuration
+line console 0
+ password 7 0822455D0A16
+ login local
+ logging synchronous
+ exec-timeout 5 0
+
+line vty 0 4
+ transport input ssh
+ login local
+ exec-timeout 5 0
+
+! Save configuration
+end
+write memory
