@@ -65,7 +65,7 @@ interface range fastethernet1/4-15
  # Configuración básica de seguridad
 no ip domain-lookup
 service password-encryption
-enable secret cisco123
+enable algorithm-type sha256 secret cisco123
 banner motd # SWITCH DE ACCESO IT - ACCESO RESTRINGIDO #
 
 # Seguridad adicional
@@ -75,14 +75,13 @@ no ip http server
 no ip http secure-server
 
 # Acceso remoto seguro
-username admin privilege 15 secret admin123
+username admin privilege 15 algorithm-type sha256 secret admin123
 ip domain-name redes.local
 crypto key generate rsa general-keys modulus 1024
 ip ssh version 2
 
 ! Console and VTY Configuration
 line console 0
- password 7 admin1234
  login local
  logging synchronous
  exec-timeout 5 0
