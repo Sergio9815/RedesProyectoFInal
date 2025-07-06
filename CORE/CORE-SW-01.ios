@@ -127,7 +127,7 @@ interface range fastethernet1/2-15
  switchport access vlan 500
  switchport nonegotiate
  shutdown
-
+ exit
 ! ACL Configuration for VLAN Separation
 ip access-list extended BLOCK_INTER_VLAN
  deny ip 192.168.0.0 0.0.0.31 192.168.0.32 0.0.0.31
