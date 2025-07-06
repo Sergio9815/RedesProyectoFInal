@@ -136,6 +136,7 @@ ip access-list extended BLOCK_INTER_VLAN
  deny ip 192.168.0.32 0.0.0.31 192.168.0.64 0.0.0.31
  deny ip 192.168.0.64 0.0.0.31 192.168.0.0 0.0.0.31
  deny ip 192.168.0.64 0.0.0.31 192.168.0.32 0.0.0.31
+ deny ip 192.168.0.96 0.0.0.31 92.168.0.96 0.0.0.31 
  permit ip any any
 
 ! Apply ACL to VLANs
