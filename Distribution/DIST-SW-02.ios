@@ -10,11 +10,16 @@ ip dhcp snooping vlan 10,20,30,99,404
 
 ! Rapid PVST+ Configuration
 spanning-tree mode rapid-pvst
-spanning-tree vlan 10 priority 8192
-spanning-tree vlan 20 priority 8192
-spanning-tree vlan 30 priority 8192
-spanning-tree vlan 99 priority 8192
-spanning-tree vlan 404 priority 8192
+! Secondary root for IT (VLAN 10)
+spanning-tree vlan 10 root secondary
+! Root bridge for Marketing (VLAN 20)
+spanning-tree vlan 20 root primary
+! Secondary root for Sales (VLAN 30)
+spanning-tree vlan 30 root secondary
+! Secondary root for Management (VLAN 99)
+spanning-tree vlan 99 root secondary
+! Secondary root for Native VLAN (VLAN 404)
+spanning-tree vlan 404 root secondary
 
 ! EtherChannel to Core Switch
 interface range fastethernet0/0-1
