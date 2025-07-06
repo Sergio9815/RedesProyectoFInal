@@ -131,7 +131,7 @@ interface range fastethernet 1/6-15
  ! Configuración básica de seguridad
 no ip domain-lookup
 service password-encryption
-enable secret cisco123
+enable algorithm-type sha256 secret cisco123
 banner motd # SWITCH DISTRIBUCIÓN 02 - USO RESTRINGIDO #
 
 ! Seguridad adicional
