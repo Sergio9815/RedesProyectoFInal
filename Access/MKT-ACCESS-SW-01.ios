@@ -5,9 +5,11 @@ gvrp
 
 ! Rapid PVST+ Configuration
 spanning-tree mode rapid-pvst
-spanning-tree vlan 20 priority 16384
-spanning-tree vlan 99 priority 16384
-spanning-tree vlan 404 priority 16384
+spanning-tree vlan 10 priority 32768
+spanning-tree vlan 20 priority 32768
+spanning-tree vlan 30 priority 32768
+spanning-tree vlan 99 priority 32768
+spanning-tree vlan 404 priority 32768
 
 interface vlan 99
  ip address 192.168.0.103 255.255.255.224
