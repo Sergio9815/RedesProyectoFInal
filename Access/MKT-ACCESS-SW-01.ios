@@ -39,7 +39,7 @@ interface fastethernet1/1
 exit
 
 ! Access ports for IT devices
-interface range fastethernet 1/2-3
+interface range fastethernet1/2-3
  description MARKETING_DEVICES
  switchport mode access
  switchport access vlan 20
