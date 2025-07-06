@@ -38,7 +38,7 @@ interface fastethernet1/1
  no shutdown
 exit
 
-! Access ports for IT devices
+! Access ports for ADMIN devices
 interface range fastethernet1/2-3
  description ADMIN_DEVICES
  switchport mode access
@@ -52,6 +52,7 @@ interface range fastethernet1/2-3
  spanning-tree bpduguard enable
  storm-control broadcast level 5.00
  storm-control multicast level 5.00
+ gvrp disable
  no shutdown
 exit
 

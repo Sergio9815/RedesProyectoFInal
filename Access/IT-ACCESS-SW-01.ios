@@ -52,6 +52,7 @@ interface range fastethernet1/2-3
  spanning-tree bpduguard enable
  storm-control broadcast level 5.00
  storm-control multicast level 5.00
+ gvrp disable
  no shutdown
 exit
 
