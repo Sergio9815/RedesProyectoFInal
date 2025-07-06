@@ -19,6 +19,14 @@ vlan 500
 ! GVRP Configuration
 gvrp
 
+! Rapid PVST+ Configuration
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 4096
+spanning-tree vlan 20 priority 4096
+spanning-tree vlan 30 priority 4096
+spanning-tree vlan 99 priority 4096
+spanning-tree vlan 404 priority 4096
+
 ! Configuración de interfaces VLAN
 interface vlan 10
  ip address 192.168.0.1 255.255.255.224
@@ -77,29 +85,15 @@ interface loopback 0
  ip address 192.168.0.100 255.255.255.255
 
 ! EtherChannel to Distribution Switches
-interface range fastethernet 0/0-1
+interface range fastethernet0/0-1
  description ETHERCHANNEL_TO_DIST-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 10,20,30,99,404
  channel-group 1 mode active
- spanning-tree portfast
- spanning-tree bpduguard enable
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
  no shutdown
 exit
 
-interface range fastethernet 1/0-1
+interface range fastethernet1/0-1
  description ETHERCHANNEL_TO_DIST-SW-02
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 10,20,30,99,404
  channel-group 2 mode active
- spanning-tree portfast
- spanning-tree bpduguard enable
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
  no shutdown
 exit
 
@@ -107,6 +101,11 @@ interface port-channel 1
  switchport mode trunk
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
  no shutdown
 exit
 
@@ -114,22 +113,19 @@ interface port-channel 2
  switchport mode trunk
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
  no shutdown
 exit
 
 ! Shutdown unused ports
-interface range fastethernet 1/2-15
+interface range fastethernet1/2-15
  switchport mode access
  switchport access vlan 500
  shutdown
-
-! Rapid PVST+ Configuration
-spanning-tree mode rapid-pvst
-spanning-tree vlan 10 priority 4096
-spanning-tree vlan 20 priority 4096
-spanning-tree vlan 30 priority 4096
-spanning-tree vlan 99 priority 4096
-spanning-tree vlan 404 priority 4096
 
 ! ACL Configuration for VLAN Separation
 ip access-list extended BLOCK_INTER_VLAN
