@@ -122,6 +122,7 @@ exit
 interface range fastethernet1/6-15
  switchport mode access
  switchport access vlan 500
+ switchport nonegotiate
  shutdown
 
  ! Configuración básica de seguridad
@@ -144,7 +145,7 @@ ip ssh version 2
 
 ! Console and VTY Configuration
 line console 0
- password 7 0822455D0A16
+ password 7 admin1234
  login local
  logging synchronous
  exec-timeout 5 0

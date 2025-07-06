@@ -1,0 +1,97 @@
+hostname IT-ACCESS-SW-01
+
+! GVRP Configuration
+gvrp
+
+! Rapid PVST+ Configuration
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 16384
+spanning-tree vlan 99 priority 16384
+spanning-tree vlan 404 priority 16384
+
+interface vlan 99
+ ip address 192.168.0.102 255.255.255.224
+ no shutdown
+
+# Configuración de interfaces
+interface fastethernet1/0
+ description UPLINK_TO_DIST-SW-01
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,99,404
+ switchport nonegotiate
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ no shutdown
+exit
+
+interface fastethernet1/1
+ description UPLINK_TO_DIST-SW-02
+ switchport mode trunk
+ switchport trunk native vlan 404
+ switchport trunk allowed vlan 10,99,404
+ switchport nonegotiate
+ spanning-tree bpduguard enable
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ no shutdown
+exit
+
+! Access ports for IT devices
+interface range fastethernet 1/2-3
+ description IT_DEVICES
+ switchport mode access
+ switchport access vlan 10
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ storm-control broadcast level 5.00
+ storm-control multicast level 5.00
+ no shutdown
+exit
+
+! Shutdown unused ports
+interface range fastethernet1/4-15
+ switchport mode access
+ switchport access vlan 500
+ switchport nonegotiate
+ shutdown
+
+ # Configuración básica de seguridad
+no ip domain-lookup
+service password-encryption
+enable secret cisco123
+banner motd # SWITCH DE ACCESO IT - ACCESO RESTRINGIDO #
+
+# Seguridad adicional
+vtp mode transparent
+no cdp run
+no ip http server
+no ip http secure-server
+
+# Acceso remoto seguro
+username admin privilege 15 secret admin123
+ip domain-name redes.local
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+
+! Console and VTY Configuration
+line console 0
+ password 7 admin1234
+ login local
+ logging synchronous
+ exec-timeout 5 0
+
+line vty 0 4
+ transport input ssh
+ login local
+ exec-timeout 5 0
+
+! Save configuration
+end
+write memory
