@@ -36,7 +36,7 @@ interface port-channel 1
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  switchport nonegotiate
- spanning-tree bpduguard enable
+ spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping trust
@@ -48,7 +48,7 @@ interface port-channel 2
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  switchport nonegotiate
- spanning-tree bpduguard enable
+spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  no shutdown
@@ -62,7 +62,7 @@ interface fastethernet1/0
  switchport trunk allowed vlan 10,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree bpduguard enable
+spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping limit rate 10
@@ -76,7 +76,7 @@ interface fastethernet1/1
  switchport trunk allowed vlan 20,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree bpduguard enable
+ spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping limit rate 10
@@ -90,7 +90,7 @@ interface fastethernet1/2
  switchport trunk allowed vlan 30,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree bpduguard enable
+ spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping limit rate 10
@@ -104,7 +104,7 @@ interface fastethernet1/3
  switchport trunk allowed vlan 99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree bpduguard enable
+ spanning-tree portfast
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping limit rate 10
