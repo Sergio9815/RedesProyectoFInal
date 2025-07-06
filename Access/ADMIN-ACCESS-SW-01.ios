@@ -5,7 +5,6 @@ gvrp
 
 ! Rapid PVST+ Configuration
 spanning-tree mode rapid-pvst
-spanning-tree vlan 10 priority 16384
 spanning-tree vlan 99 priority 16384
 spanning-tree vlan 404 priority 16384
 
@@ -52,6 +51,7 @@ interface range fastethernet1/2-3
  spanning-tree bpduguard enable
  storm-control broadcast level 5.00
  storm-control multicast level 5.00
+ ip dhcp snooping limit rate 10
  gvrp disable
  no shutdown
 exit
