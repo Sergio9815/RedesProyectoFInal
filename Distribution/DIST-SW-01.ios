@@ -1,3 +1,4 @@
+! cisco L3 swicth configuration script
 enable
 configure terminal
 hostname DIST-SW-01 
