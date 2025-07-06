@@ -13,7 +13,7 @@ interface vlan 99
  ip address 192.168.0.103 255.255.255.224
  no shutdown
 
-# Configuración de interfaces
+! Configuración de interfaces
 interface fastethernet1/0
  description UPLINK_TO_DIST-SW-01
  switchport mode trunk
@@ -64,19 +64,19 @@ interface range fastethernet1/4-15
  switchport nonegotiate
  shutdown
 
- # Configuración básica de seguridad
+! Configuración básica de seguridad
 no ip domain-lookup
 service password-encryption
 enable algorithm-type sha256 secret cisco123
 banner motd # SWITCH DE ACCESO MARKETING - ACCESO RESTRINGIDO #
 
-# Seguridad adicional
+! Seguridad adicional
 vtp mode transparent
 no cdp run
 no ip http server
 no ip http secure-server
 
-# Acceso remoto seguro
+! Acceso remoto seguro
 username admin privilege 15 algorithm-type sha256 secret admin123
 ip domain-name redes.local
 crypto key generate rsa general-keys modulus 1024
