@@ -36,7 +36,7 @@ interface port-channel 1
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  switchport nonegotiate
- spanning-tree portfast
+ spanning-tree portfast trunk
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  ip dhcp snooping trust
@@ -48,7 +48,8 @@ interface port-channel 2
  switchport trunk native vlan 404
  switchport trunk allowed vlan 10,20,30,99,404
  switchport nonegotiate
-spanning-tree portfast
+ spanning-tree portfast trunk
+ ip dhcp snooping trust
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
  no shutdown
@@ -62,10 +63,9 @@ interface fastethernet1/0
  switchport trunk allowed vlan 10,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
-spanning-tree portfast
+spanning-tree portfast trunk
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
- ip dhcp snooping limit rate 10
  no shutdown
 exit
 
@@ -76,10 +76,9 @@ interface fastethernet1/1
  switchport trunk allowed vlan 20,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree portfast
+ spanning-tree portfast trunk
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
- ip dhcp snooping limit rate 10
  no shutdown
 exit
 
@@ -90,10 +89,9 @@ interface fastethernet1/2
  switchport trunk allowed vlan 30,99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree portfast
+ spanning-tree portfast trunk
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
- ip dhcp snooping limit rate 10
  no shutdown
 exit
 
@@ -104,10 +102,9 @@ interface fastethernet1/3
  switchport trunk allowed vlan 99,404
  switchport trunk encapsulation dot1q
  switchport nonegotiate
- spanning-tree portfast
+ spanning-tree portfast trunk
  storm-control broadcast level 10.00
  storm-control multicast level 10.00
- ip dhcp snooping limit rate 10
  no shutdown
 exit
 
@@ -124,6 +121,11 @@ interface range fastethernet1/6-15
  switchport mode access
  switchport access vlan 500
  switchport nonegotiate
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security violation shutdown
+ switchport port-security aging time 2
+ switchport port-security aging type inactivity
  shutdown
 
  ! Configuración básica de seguridad
