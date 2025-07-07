@@ -3,8 +3,6 @@ enable
 configure terminal
 hostname DIST-SW-01 
 
-! GVRP Configuration
-gvrp
 
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,99,404
