@@ -2,8 +2,11 @@ enable
 configure terminal
 hostname DIST-SW-02
 
-! GVRP Configuration
-gvrp
+!Configuring vlan sharing protocol
+vtp domain redes.local
+vtp mode client
+vtp version 2
+vtp password vtp_pass_01
 
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,99,404
