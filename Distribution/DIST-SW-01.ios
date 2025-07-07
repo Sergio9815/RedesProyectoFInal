@@ -26,115 +26,108 @@ spanning-tree vlan 99 priority 8192
 spanning-tree vlan 404 priority 8192
 
 ! EtherChannel to Core Switch
-interface range fastethernet0/0-1
- description ETHERCHANNEL_TO_CORE-SW-01
- channel-group 1 mode active
- no shutdown
+interface range eth0/0 - 1
+description ETHERCHANNEL_TO_CORE-SW-01
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
+spanning-tree portfast trunk
+ip dhcp snooping trust
+channel-group 1 mode active
+no shutdown
 exit
 
 ! EtherChannel to Distribution 02
-interface range fastethernet1/4-5
- description ETHERCHANNEL_TO_DIST-SW-02
- channel-group 2 mode active
- no shutdown
+interface range eth0/2 - 3
+description ETHERCHANNEL_TO_DIST-SW-02
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
+spanning-tree portfast trunk
+ip dhcp snooping trust
+channel-group 2 mode active
+no shutdown
 exit
 
 interface port-channel 1
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 10,20,30,99,404
- switchport nonegotiate
- spanning-tree portfast trunk
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- ip dhcp snooping trust
- no shutdown
+no shutdown
 exit
 
 interface port-channel 2
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 10,20,30,99,404
- switchport nonegotiate
- spanning-tree portfast trunk
- ip dhcp snooping trust
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+no shutdown
 exit
 
 ! Uplinks to Access Switches
-interface fastethernet1/0
- description UPLINK_TO_IT-ACCESS-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 10,99,404
- switchport trunk encapsulation dot1q
- switchport nonegotiate
+interface eth1/0
+description UPLINK_TO_IT-ACCESS-SW-01
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 10,99,404
+switchport trunk encapsulation dot1q
 spanning-tree portfast trunk
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+no shutdown
 exit
 
-interface fastethernet1/1
- description UPLINK_TO_MKT-ACCESS-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 20,99,404
- switchport trunk encapsulation dot1q
- switchport nonegotiate
- spanning-tree portfast trunk
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+interface eth1/1
+description UPLINK_TO_MKT-ACCESS-SW-01
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 20,99,404
+switchport trunk encapsulation dot1q
+spanning-tree portfast trunk
+no shutdown
 exit
 
-interface fastethernet1/2
- description UPLINK_TO_SALES-ACCESS-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 30,99,404
- switchport trunk encapsulation dot1q
- switchport nonegotiate
- spanning-tree portfast trunk
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+interface eth1/2
+description UPLINK_TO_SALES-ACCESS-SW-01
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 30,99,404
+switchport trunk encapsulation dot1q
+spanning-tree portfast trunk
+no shutdown
 exit
 
-interface fastethernet1/3
- description UPLINK_TO_ADMIN-ACCESS-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 99,404
- switchport trunk encapsulation dot1q
- switchport nonegotiate
- spanning-tree portfast trunk
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+interface eth1/3
+description UPLINK_TO_ADMIN-ACCESS-SW-01
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 99,404
+
+spanning-tree portfast trunk
+no shutdown
 exit
 
 ! VLAN de gestión
-vlan 99
- name GESTION
 interface vlan 99
- ip address 192.168.0.98 255.255.255.0
- no shutdown
+ip address 192.168.0.98 255.255.255.0
+no shutdown
 exit
 
-! Shutdown unused ports
-interface range fastethernet1/6-15
- switchport mode access
- switchport access vlan 500
- switchport nonegotiate
- switchport port-security
- switchport port-security maximum 1
- switchport port-security violation shutdown
- switchport port-security aging time 2
- switchport port-security aging type inactivity
- shutdown
+!unused ports
+interface range eth2/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
+interface range eth3/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
 
 ! ACL Configuration for VLAN Separation
 ip access-list extended BLOCK_INTER_VLAN
@@ -156,7 +149,7 @@ interface vlan 30
 ip access-group BLOCK_INTER_VLAN in
 exit
 
- ! Security Configuration
+! Security Configuration
 no ip domain-lookup
 service password-encryption
 enable secret cisco123
@@ -176,14 +169,14 @@ ip ssh version 2
 
 ! Console and VTY Configuration
 line console 0
- login local
- logging synchronous
- exec-timeout 5 0
+login local
+logging synchronous
+exec-timeout 5 0
 
 line vty 0 4
- transport input ssh
- login local
- exec-timeout 5 0
+transport input ssh
+login local
+exec-timeout 5 0
 
 ! Save configuration
 end
