@@ -136,10 +136,30 @@ interface range fastethernet1/6-15
  switchport port-security aging type inactivity
  shutdown
 
- ! Configuración básica de seguridad
+! ACL Configuration for VLAN Separation
+ip access-list extended BLOCK_INTER_VLAN
+deny ip 192.168.0.0 0.0.0.31 192.168.0.32 0.0.0.31
+deny ip 192.168.0.0 0.0.0.31 192.168.0.64 0.0.0.31
+deny ip 192.168.0.32 0.0.0.31 192.168.0.0 0.0.0.31
+deny ip 192.168.0.32 0.0.0.31 192.168.0.64 0.0.0.31
+deny ip 192.168.0.64 0.0.0.31 192.168.0.0 0.0.0.31
+deny ip 192.168.0.64 0.0.0.31 192.168.0.32 0.0.0.31
+deny ip 192.168.0.96 0.0.0.31 92.168.0.96 0.0.0.31 
+permit ip any any
+
+! Apply ACL to VLANs
+interface vlan 10
+ip access-group BLOCK_INTER_VLAN in
+interface vlan 20
+ip access-group BLOCK_INTER_VLAN in
+interface vlan 30
+ip access-group BLOCK_INTER_VLAN in
+exit
+
+ ! Security Configuration
 no ip domain-lookup
 service password-encryption
-enable algorithm-type sha256 secret cisco123
+enable secret cisco123
 banner motd # SWITCH DISTRIBUCIÓN 01 - USO RESTRINGIDO #
 
 ! Seguridad adicional
@@ -149,7 +169,7 @@ no ip http secure-server
 vtp mode transparent
 
 ! Acceso remoto seguro
-username admin privilege 15 algorithm-type sha256 secret admin123
+username admin privilege 15 secret admin123
 ip domain-name redes.local
 crypto key generate rsa general-keys modulus 1024
 ip ssh version 2
