@@ -50,16 +50,11 @@ no shutdown
 exit
 
 interface vlan 99
-ip address 192.168.0.97 255.255.255.0
+ip address 192.168.0.97 255.255.255.224
 description VLAN GESTION
 no shutdown
 exit
 
-interface vlan 404
-description NATIVE_VLAN
-no ip address
-shutdown
-exit
 
 interface vlan 500
 description UNUSED_VLAN
@@ -99,7 +94,7 @@ exit
 
 ! configuration de interfaces (EtherChannel y Troncales)
 interface loopback 0
-ip address 192.168.0.100 255.255.255.224
+ip address 192.168.0.130 255.255.255.224
 exit
 
 ! EtherChannel to Distribution Switches
