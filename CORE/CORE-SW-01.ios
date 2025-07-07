@@ -18,7 +18,7 @@ name UNUSED_VLAN
 exit
 
 !Configuring vlan sharing protocol
-vtp domanin redes.local
+vtp domain redes.local
 vtp mode server
 vtp version 2
 vtp password vtp_pass_01
@@ -103,53 +103,68 @@ interface loopback 0
 ip address 192.168.0.100 255.255.255.255
 exit
 
-interface port-channel 1
-switchport mode trunk
-switchport trunk native vlan 404
-switchport trunk allowed vlan 10,20,30,99,404
-switchport nonegotiate
-spanning-tree portfast
-spanning-tree bpduguard enable
-no shutdown
-exit
-
-interface port-channel 2
-switchport mode trunk
-switchport trunk native vlan 404
-switchport trunk allowed vlan 10,20,30,99,404
-switchport nonegotiate
-spanning-tree portfast
-spanning-tree bpduguard enable
-no shutdown
-exit
-
-!enable interfaces manually
-interface fastethernet0/0
-no shutdown
-exit
-interface fastethernet0/1
-no shutdown
-exit
-
 ! EtherChannel to Distribution Switches
-interface range fastethernet0/0 - 1
+interface range eth0/0 - 1
 description ETHERCHANNEL_TO_DIST-SW-01
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
+spanning-tree portfast trunk
+spanning-tree bpduguard enable
 channel-group 1 mode active
 no shutdown
 exit
 
-interface range fastethernet1/0 - 1
+interface range eth0/2 - 3
 description ETHERCHANNEL_TO_DIST-SW-02
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
+spanning-tree portfast trunk
+spanning-tree bpduguard enable
 channel-group 2 mode active
 no shutdown
 exit
 
+interface port-channel 1
+no shutdown
+exit
+
+interface port-channel 2
+no shutdown
+exit
 
 ! Shutdown unused ports
-interface range fastethernet1/2 -15
+interface range eth1/0 - 3
 switchport mode access
 switchport access vlan 500
-switchport nonegotiate
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
+interface range eth2/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
+interface range eth3/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
 shutdown
 exit
 
