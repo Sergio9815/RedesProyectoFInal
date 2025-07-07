@@ -169,15 +169,12 @@ shutdown
 exit
 
 ! Configuration basic de seguridad
-no ip domain-lookup
 service password-encryption
-enable secret cisco123
 banner motd # CORE SWITCH - ACCESO AUTORIZADO SOLAMENTE #
 
 ! Seguridad adicional
 no cdp run
 no ip http server
-no ip http secure-server
 
 ! Acceso remoto seguro
 username admin privilege 15 secret admin123
