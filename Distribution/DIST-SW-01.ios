@@ -131,14 +131,20 @@ exit
 
 ! ACL Configuration for VLAN Separation
 ip access-list extended BLOCK_INTER_VLAN
-deny ip 192.168.0.0 0.0.0.31 192.168.0.32 0.0.0.31
-deny ip 192.168.0.0 0.0.0.31 192.168.0.64 0.0.0.31
-deny ip 192.168.0.32 0.0.0.31 192.168.0.0 0.0.0.31
-deny ip 192.168.0.32 0.0.0.31 192.168.0.64 0.0.0.31
-deny ip 192.168.0.64 0.0.0.31 192.168.0.0 0.0.0.31
-deny ip 192.168.0.64 0.0.0.31 192.168.0.32 0.0.0.31
-deny ip 192.168.0.96 0.0.0.31 192.168.0.96 0.0.0.31 
-permit ip any any
+ ! Block IT to Marketing
+ deny ip 192.168.0.0 0.0.0.31 192.168.0.32 0.0.0.31
+ deny ip 192.168.0.32 0.0.0.31 192.168.0.0 0.0.0.31
+
+ ! Block IT to Sales
+ deny ip 192.168.0.0 0.0.0.31 192.168.0.64 0.0.0.31
+ deny ip 192.168.0.64 0.0.0.31 192.168.0.0 0.0.0.31
+
+ ! Block Marketing to sales
+ deny ip 192.168.0.32 0.0.0.31 192.168.0.64 0.0.0.31
+ deny ip 192.168.0.64 0.0.0.31 192.168.0.32 0.0.0.31
+
+ ! Permit all other traffic
+ permit ip any any
 
 ! Apply ACL to VLANs
 interface vlan 10
