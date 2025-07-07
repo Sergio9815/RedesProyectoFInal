@@ -1,5 +1,9 @@
 hostname MKT-ACCESS-SW-01
 
+vtp domain redes.local
+vtp mode transparent
+vtp version 2
+vtp password vtp_pass_01
 
 ! Rapid PVST+ Configuration
 spanning-tree mode rapid-pvst
