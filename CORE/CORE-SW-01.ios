@@ -100,7 +100,7 @@ exit
 
 ! configuration de interfaces (EtherChannel y Troncales)
 interface loopback 0
-ip address 192.168.0.100 255.255.255.255
+ip address 192.168.0.100 255.255.255.224
 exit
 
 ! EtherChannel to Distribution Switches
@@ -175,7 +175,7 @@ banner motd # CORE SWITCH - ACCESO AUTORIZADO SOLAMENTE #
 ! Seguridad adicional
 no cdp run
 no ip http server
-
+end
 ! Acceso remoto seguro
 username admin privilege 15 secret admin123
 ip domain-name redes.local
