@@ -1,7 +1,8 @@
+configure terminal
 hostname ADMIN-ACCESS-SW-01
 
 vtp domain redes.local
-vtp mode transparent
+vtp mode client
 vtp version 2
 vtp password vtp_pass_01
 
@@ -14,87 +15,95 @@ spanning-tree vlan 99 priority 32768
 spanning-tree vlan 404 priority 32768
 
 interface vlan 99
- ip address 192.168.0.105 255.255.255.224
- no shutdown
+ip address 192.168.0.105 255.255.255.224
+no shutdown
 
-! Configuración de interfaces
-interface fastethernet1/0
- description UPLINK_TO_DIST-SW-01
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 99,404
- switchport nonegotiate
- spanning-tree bpduguard enable
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+! conmfiguracion de interfaces
+interface eth0/0
+description UPLINK_TO_DIST-SW-01
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 99,404
+no shutdown
 exit
 
-interface fastethernet1/1
- description UPLINK_TO_DIST-SW-02
- switchport mode trunk
- switchport trunk native vlan 404
- switchport trunk allowed vlan 99,404
- switchport nonegotiate
- spanning-tree bpduguard enable
- storm-control broadcast level 10.00
- storm-control multicast level 10.00
- no shutdown
+interface eth0/1
+description UPLINK_TO_DIST-SW-02
+switchport mode trunk
+switchport trunk native vlan 404
+switchport trunk allowed vlan 99,404
+no shutdown
 exit
 
 ! Access ports for ADMIN devices
-interface range fastethernet1/2-3
- description ADMIN_DEVICES
- switchport mode access
- switchport access vlan 99
- switchport port-security
- switchport port-security maximum 2
- switchport port-security violation restrict
- switchport port-security mac-address sticky
- switchport nonegotiate
- spanning-tree portfast
- spanning-tree bpduguard enable
- storm-control broadcast level 5.00
- storm-control multicast level 5.00
- ip dhcp snooping limit rate 10
- no shutdown
+interface range eth0/2-3
+description ADMIN_DEVICES
+switchport mode access
+switchport access vlan 99
+switchport port-security
+switchport port-security maximum 2
+switchport port-security violation restrict
+switchport port-security mac-address sticky
+spanning-tree bpduguard enable
+ip dhcp snooping limit rate 10
+no shutdown
 exit
 
-! Shutdown unused ports
-interface range fastethernet1/4-15
- switchport mode access
- switchport access vlan 500
- switchport nonegotiate
- shutdown
+!unused ports
+interface range eth1/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+interface range eth2/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
+interface range eth3/0 - 3
+switchport mode access
+switchport access vlan 500
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security aging time 2
+switchport port-security aging type inactivity
+shutdown
+exit
 
-! Configuración básica de seguridad
-no ip domain-lookup
+! conmfiguracion basica de seguridad
 service password-encryption
-enable algorithm-type sha256 secret cisco123
 banner motd # SWITCH DE ACCESO ADMIN - ACCESO RESTRINGIDO #
 
 ! Seguridad adicional
-vtp mode transparent
 no cdp run
 no ip http server
-no ip http secure-server
 
 ! Acceso remoto seguro
-username admin privilege 15 algorithm-type sha256 secret admin123
+username admin privilege 15 secret admin123
 ip domain-name redes.local
 crypto key generate rsa general-keys modulus 1024
 ip ssh version 2
 
 ! Console and VTY Configuration
 line console 0
- login local
- logging synchronous
- exec-timeout 5 0
+login local
+logging synchronous
+exec-timeout 5 0
 
 line vty 0 4
- transport input ssh
- login local
- exec-timeout 5 0
+transport input ssh
+login local
+exec-timeout 5 0
 
 ! Save configuration
 end

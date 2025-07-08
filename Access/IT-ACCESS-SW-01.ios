@@ -95,7 +95,7 @@ no cdp run
 no ip http server
 
 ! Acceso remoto seguro
-username admin privilege 15 algorithm-type sha256 secret admin123
+username admin privilege 15 secret admin123
 ip domain-name redes.local
 crypto key generate rsa general-keys modulus 1024
 ip ssh version 2
