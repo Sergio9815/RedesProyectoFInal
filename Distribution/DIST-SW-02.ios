@@ -109,7 +109,7 @@ exit
 
 ! VLAN de management
 interface vlan 99
-ip address 192.168.0.99 255.255.255.0
+ip address 192.168.0.99 255.255.255.224
 no shutdown
 exit
 

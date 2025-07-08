@@ -10,7 +10,7 @@ vtp version 2
 vtp password vtp_pass_01
 
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,99,404
+ip dhcp snooping vlan 10,20,30,99
 
 ! Rapid PVST+ Configuration
 spanning-tree mode rapid-pvst
@@ -55,6 +55,7 @@ interface port-channel 1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
 no shutdown
 exit
 
@@ -62,6 +63,7 @@ interface port-channel 2
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
 no shutdown
 exit
 
@@ -109,7 +111,7 @@ exit
 
 ! VLAN de gestión
 interface vlan 99
-ip address 192.168.0.98 255.255.255.0
+ip address 192.168.0.98 255.255.255.224
 no shutdown
 exit
 
@@ -165,16 +167,12 @@ ip access-group BLOCK_INTER_VLAN in
 exit
 
 ! Security Configuration
-no ip domain-lookup
 service password-encryption
-enable secret cisco123
 banner motd # SWITCH DISTRIBUCIÓN 01 - USO RESTRINGIDO #
 
 ! Seguridad adicional
 no cdp run
 no ip http server
-no ip http secure-server
-vtp mode transparent
 
 ! Acceso remoto seguro
 username admin privilege 15 secret admin123
