@@ -62,7 +62,9 @@ no ip address
 shutdown
 exit
 
+ip routing
 
+service dhcp
 ! DHCP Configuration
 ip dhcp excluded-address 192.168.0.1
 ip dhcp excluded-address 192.168.0.33
@@ -89,12 +91,13 @@ exit
 
 ip dhcp pool MANAGEMENT_POOL
 network 192.168.0.96 255.255.255.224
+default-router 192.168.0.97
 lease 7
 exit
 
 ! configuration de interfaces (EtherChannel y Troncales)
 interface loopback 0
-ip address 192.168.0.130 255.255.255.224
+ip address 192.168.0.130 255.255.255.255
 exit
 
 ! EtherChannel to Distribution Switches
@@ -105,7 +108,6 @@ switchport mode trunk
 switchport trunk native vlan 404
 switchport trunk allowed vlan 10,20,30,99,404
 spanning-tree portfast trunk
-spanning-tree bpduguard enable
 channel-group 1 mode active
 no shutdown
 exit
@@ -117,7 +119,6 @@ switchport mode trunk
 switchport trunk native vlan 404
 switchport trunk allowed vlan 10,20,30,99,404
 spanning-tree portfast trunk
-spanning-tree bpduguard enable
 channel-group 2 mode active
 no shutdown
 exit
@@ -126,6 +127,7 @@ interface port-channel 1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
 no shutdown
 exit
 
@@ -133,6 +135,7 @@ interface port-channel 2
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 404
+switchport trunk allowed vlan 10,20,30,99,404
 no shutdown
 exit
 
